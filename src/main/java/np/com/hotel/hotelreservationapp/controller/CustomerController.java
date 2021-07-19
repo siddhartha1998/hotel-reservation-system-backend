@@ -61,12 +61,9 @@ public class CustomerController {
 									username,
 									customer.getAddress(),
 									email,
-									customer.getIdType(),
-									customer.getIdNumber(),
 									customer.getAge(),
 									customer.getGender(),
 									customer.getPhone(),
-								
 									customer.getUser(),
 									customer.getReservation());
 		
@@ -113,61 +110,53 @@ public class CustomerController {
 	}
 	
 	
-//	
-//	@PutMapping("/updateCustomerDetail/{id}")
-//	public ResponseEntity<?>updateCustomerDetail(@PathVariable Long id,@RequestBody Customer customer){
-//		
-//		Object principal=SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-//		String username=((UserDetailsImpl)principal).getUsername();
-//		
-//		Optional<Customer>cus=customerRepo.findById(id);
-//		if(cus.isPresent()) {
-//			Customer update=cus.get();
-//			String cUsername=update.getUsername();
-//			if(username.equals(cUsername)) {
-//				
-//				 customerRepo.findById(id).map(updateCustomerDetail->{
-//					 
-//					 if(customer.getFullname()!=null) {
-//					updateCustomerDetail.setFullname(customer.getFullname());
-//					 }
-//					 if(customer.getAddress()!=null) {
-//					updateCustomerDetail.setAddress(customer.getAddress());
-//					 }
-//					 if(customer.getIdType()!=null) {
-//				
-//					
-//					updateCustomerDetail.setIdType(customer.getIdType());
-//					 }
-//					 if(customer.getIdNumber()!=null) {
-//					updateCustomerDetail.setIdNumber(customer.getIdNumber());
-//					 }
-//					 if(customer.getAge()!=null) {
-//					updateCustomerDetail.setAge(customer.getAge());
-//					 }if(customer.getGender()!=null) {
-//					updateCustomerDetail.setGender(customer.getGender());
-//					 }
-//					 if(customer.getPhone()!=null) {
-//					updateCustomerDetail.setPhone(customer.getPhone());
-//					 }
-//					
-//					return customerRepo.save(updateCustomerDetail);
-//				}).orElseThrow(() -> new ResourceNotFoundException("Id "+id+ " not found"));
-//			return ResponseEntity.ok("Customer Detail Update Successfully!");	
-//			}else {
-//					return ResponseEntity.ok("Customer cannot updated. ");
-//				}
-//
-//	
-//			
-//		}else {
-//		
-//	      return ResponseEntity.ok("Customer with id "+id+" is not found");	
-//		}
-//						
-//				
-//	}
+	
+	@PutMapping("/updateCustomerDetail/{id}")
+	public ResponseEntity<?>updateCustomerDetail(@PathVariable Long id,@RequestBody Customer customer){
 		
+		Object principal=SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		String username=((UserDetailsImpl)principal).getUsername();
+		
+		Optional<Customer>cus=customerRepo.findById(id);
+		if(cus.isPresent()) {
+			Customer update=cus.get();
+			String cUsername=update.getUsername();
+			if(username.equals(cUsername)) {
+				
+				 customerRepo.findById(id).map(updateCustomerDetail->{
+					 
+					 if(customer.getFullname()!=null) {
+					updateCustomerDetail.setFullname(customer.getFullname());
+					 }
+					 if(customer.getAddress()!=null) {
+					updateCustomerDetail.setAddress(customer.getAddress());
+					 }
+					 if(customer.getAge()!=null) {
+					updateCustomerDetail.setAge(customer.getAge());
+					 }if(customer.getGender()!=null) {
+					updateCustomerDetail.setGender(customer.getGender());
+					 }
+					 if(customer.getPhone()!=null) {
+					updateCustomerDetail.setPhone(customer.getPhone());
+					 }
+					
+					return customerRepo.save(updateCustomerDetail);
+				}).orElseThrow(() -> new ResourceNotFoundException("Id "+id+ " not found"));
+			return ResponseEntity.ok("Customer Detail Update Successfully!");	
+			}else {
+					return ResponseEntity.ok("Customer cannot updated. ");
+				}
+
+	
+			
+		}else {
+		
+	      return ResponseEntity.ok("Customer with id "+id+" is not found");	
+		}
+						
+				
+	}
+	
 		
 	@PutMapping("/deleteCustomerDetail/{id}")
 	public ResponseEntity<?>deleteCustomerDetails(@PathVariable Long id){

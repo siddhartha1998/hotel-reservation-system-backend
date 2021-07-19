@@ -36,12 +36,13 @@ public class ReservationDetails {
 	@NotBlank
 	private String noOfGuest;
 	
+	private String idType;
+	
+	private String idNumber;
+	
 	@ManyToOne
 	private Customer customer;
 	
-	
-	@NotBlank
-	private String type;
 	
 	private boolean active=true;
 	
@@ -63,8 +64,8 @@ public class ReservationDetails {
 	}
 
 	public ReservationDetails(String hotelName, Room room,  Long roomNumber,String checkInDate,
-			String checkOutDate, String noOfGuest, Customer customer,
-			 String type,String reservationTime, Hotel hotel) {
+			String checkOutDate, String noOfGuest, String idType, String idNumber, Customer customer,
+			String reservationTime, Hotel hotel) {
 		super();
 		this.hotelName=hotelName;
 		this.room=room;
@@ -72,120 +73,100 @@ public class ReservationDetails {
 		this.checkInDate = checkInDate;
 		this.checkOutDate = checkOutDate;
 		this.noOfGuest = noOfGuest;
+		this.idType = idType;
+		this.idNumber = idNumber;
 		this.customer = customer;
-		this.type = type;
 		this.reservationTime=reservationTime;
 		this.hotel=hotel;
 	}
-
-	
-	public String getHotelName() {
-		return hotelName;
-	}
-
-
-	public void setHotelName(String hotelName) {
-		this.hotelName = hotelName;
-	}
-
-
-
 
 	public Long getId() {
 		return id;
 	}
 
-
 	public void setId(Long id) {
 		this.id = id;
 	}
 
+	public String getHotelName() {
+		return hotelName;
+	}
 
-
+	public void setHotelName(String hotelName) {
+		this.hotelName = hotelName;
+	}
 
 	public Long getRoomNumber() {
 		return roomNumber;
 	}
 
-	
-
 	public void setRoomNumber(Long roomNumber) {
 		this.roomNumber = roomNumber;
 	}
 
-	
 	public String getReservationTime() {
 		return reservationTime;
 	}
-
 
 	public void setReservationTime(String reservationTime) {
 		this.reservationTime = reservationTime;
 	}
 
-
-
 	public String getCheckInDate() {
 		return checkInDate;
 	}
-
 
 	public void setCheckInDate(String checkInDate) {
 		this.checkInDate = checkInDate;
 	}
 
-
 	public String getCheckOutDate() {
 		return checkOutDate;
 	}
-
 
 	public void setCheckOutDate(String checkOutDate) {
 		this.checkOutDate = checkOutDate;
 	}
 
-
 	public String getNoOfGuest() {
 		return noOfGuest;
 	}
-
 
 	public void setNoOfGuest(String noOfGuest) {
 		this.noOfGuest = noOfGuest;
 	}
 
+	public String getIdType() {
+		return idType;
+	}
+
+	public void setIdType(String idType) {
+		this.idType = idType;
+	}
+
+	public String getIdNumber() {
+		return idNumber;
+	}
+
+	public void setIdNumber(String idNumber) {
+		this.idNumber = idNumber;
+	}
 
 	public Customer getCustomer() {
 		return customer;
 	}
 
-
 	public void setCustomer(Customer customer) {
 		this.customer = customer;
 	}
-
-
-
-	public String getType() {
-		return type;
-	}
-
-
-	public void setType(String type) {
-		this.type = type;
-	}
-
 
 	public boolean isActive() {
 		return active;
 	}
 
-
 	public void setActive(boolean active) {
 		this.active = active;
 	}
-
-	
 
 	public Hotel getHotel() {
 		return hotel;
@@ -204,7 +185,6 @@ public class ReservationDetails {
 	}
 
 	
-
 
 	
 

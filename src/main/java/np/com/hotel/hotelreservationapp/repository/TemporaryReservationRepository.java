@@ -20,6 +20,9 @@ public interface TemporaryReservationRepository extends JpaRepository<TemporaryR
 	Object findByRoomId(Long roomId);
 
 	Optional<TemporaryReservation> findByRoomNumber(Long roomId);
+
+	@Query(value="SELECT * FROM tbl_temporary_reservation WHERE active='1' AND hotel_id=?1", nativeQuery = true)
+	public List<TemporaryReservation>findByHotelId(Long id);
 	
 	//@Query(value="SELECT * FROM tbl_temporary_reservation WHERE active='1' AND reserved_by=?1",nativeQuery = true)
 	//public List<?>findAll(String username);

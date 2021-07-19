@@ -28,17 +28,19 @@ public class TemporaryReservation {
 	
 	private String reservationTime;
 	
-	@NotBlank
 	private String checkInDate;
-	
+		
 	private String checkOutDate;
 	
 	@NotBlank
 	private String noOfGuest;
 	
+	@NotBlank
+	private String idType;
 	
 	@NotBlank
-	private String type;
+	private String idNumber;
+	
 	
 	private boolean active=true;
 	
@@ -60,8 +62,8 @@ public class TemporaryReservation {
 
 	public TemporaryReservation(String hotelName, Hotel hotel,Room room,
 			 Long roomNumber, String reservationTime, String checkInDate, String checkOutDate,
-			 String noOfGuest, Customer customer, 
-		     String type) {
+			 String noOfGuest, String idType, String idNumber, Customer customer
+		    ) {
 		super();
 		this.hotelName = hotelName;
 		this.hotel=hotel;
@@ -71,110 +73,98 @@ public class TemporaryReservation {
 		this.checkInDate = checkInDate;
 		this.checkOutDate = checkOutDate;
 		this.noOfGuest = noOfGuest;
+		this.idType = idType;
+		this.idNumber = idNumber;
 		this.customer = customer;
-		this.type = type;
-		
-		
+			
 	}
 
 	public Long getId() {
 		return id;
 	}
 
-	
 	public void setId(Long id) {
 		this.id = id;
 	}
-	
 
 	public String getHotelName() {
 		return hotelName;
 	}
 
-	
 	public void setHotelName(String hotelName) {
 		this.hotelName = hotelName;
 	}
 
-
-	
 	public Long getRoomNumber() {
 		return roomNumber;
 	}
 
-	
 	public void setRoomNumber(Long roomNumber) {
 		this.roomNumber = roomNumber;
 	}
 
-	
 	public String getReservationTime() {
 		return reservationTime;
 	}
 
-	
 	public void setReservationTime(String reservationTime) {
 		this.reservationTime = reservationTime;
 	}
 
-	
 	public String getCheckInDate() {
 		return checkInDate;
 	}
 
-	
 	public void setCheckInDate(String checkInDate) {
 		this.checkInDate = checkInDate;
 	}
 
-	
 	public String getCheckOutDate() {
 		return checkOutDate;
 	}
 
-	
 	public void setCheckOutDate(String checkOutDate) {
 		this.checkOutDate = checkOutDate;
 	}
 
-	
 	public String getNoOfGuest() {
 		return noOfGuest;
 	}
 
-	
 	public void setNoOfGuest(String noOfGuest) {
 		this.noOfGuest = noOfGuest;
 	}
 
-	
-	public Customer getCustomer() {
-		return customer;
+	public String getIdType() {
+		return idType;
 	}
 
-	
-	public void setCustomer(Customer customer) {
-		this.customer = customer;
+	public void setIdType(String idType) {
+		this.idType = idType;
 	}
 
-	
-	public String getType() {
-		return type;
+	public String getIdNumber() {
+		return idNumber;
 	}
 
-	
-	public void setType(String type) {
-		this.type = type;
+	public void setIdNumber(String idNumber) {
+		this.idNumber = idNumber;
 	}
 
-	
 	public boolean isActive() {
 		return active;
 	}
 
-	
 	public void setActive(boolean active) {
 		this.active = active;
+	}
+
+	public Customer getCustomer() {
+		return customer;
+	}
+
+	public void setCustomer(Customer customer) {
+		this.customer = customer;
 	}
 
 	public Hotel getHotel() {
@@ -192,11 +182,6 @@ public class TemporaryReservation {
 	public void setRoom(Room room) {
 		this.room = room;
 	}
-
-//	public void setTemporaryReservation(Hotel h) {
-//		// TODO Auto-generated method stub
-//		
-//	}
 
 	
 

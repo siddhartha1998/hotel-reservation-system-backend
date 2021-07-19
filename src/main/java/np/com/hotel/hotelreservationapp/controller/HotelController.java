@@ -17,10 +17,16 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import np.com.hotel.hotelreservationapp.exception.ResourceNotFoundException;
+import np.com.hotel.hotelreservationapp.model.Customer;
 import np.com.hotel.hotelreservationapp.model.Hotel;
+import np.com.hotel.hotelreservationapp.model.ReservationDetails;
+import np.com.hotel.hotelreservationapp.model.Room;
 import np.com.hotel.hotelreservationapp.model.UsersAuthentication;
 import np.com.hotel.hotelreservationapp.payload.response.MessageResponse;
+import np.com.hotel.hotelreservationapp.repository.CustomerRepository;
 import np.com.hotel.hotelreservationapp.repository.HotelRepository;
+import np.com.hotel.hotelreservationapp.repository.ReservationRepository;
+import np.com.hotel.hotelreservationapp.repository.RoomRepository;
 import np.com.hotel.hotelreservationapp.repository.UsersAuthenticationRepository;
 import np.com.hotel.hotelreservationapp.services.UserDetailsImpl;
 
@@ -33,6 +39,15 @@ public class HotelController {
 	
 	@Autowired
 	HotelRepository hotelRepo;
+	
+	@Autowired
+	RoomRepository roomRepo;
+	
+	@Autowired
+	ReservationRepository reservationRepo;
+	
+	@Autowired
+	CustomerRepository customerRepo;
 
 	@PostMapping("/addHotelDetail")
 	@PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_HOTEL')")
@@ -55,7 +70,6 @@ public class HotelController {
 							hotel.getHotelAddress(),
 							hotel.getPhone(),
 							hotel.getPanNumber(),
-							hotel.getDocument(),
 							hotel.getStatus(),
 							hotel.getDescription(),
 							hotel.isActive(),
@@ -73,8 +87,15 @@ public class HotelController {
 		}
 	}
 	
-	   @GetMapping("/getHotelDetail")
+	  @GetMapping("/getAllHotel")
 	   @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_HOTEL')")
+	   public List<Hotel>getAllHotel(){
+		   return hotelRepo.findAllHotel();
+	}
+	   
+	
+	   @GetMapping("/getHotelDetail")
+	   @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_HOTEL') or hasRole('ROLE_CUSTOMER')")
 	   public List<Hotel>getHotelDetail(){
 		   return hotelRepo.findAll();
 	}
@@ -87,15 +108,42 @@ public class HotelController {
 	   
 		
 		@GetMapping("/getHotelById/{id}")
-		public Optional<Hotel> getHotelById(@PathVariable Long id){
+		public Optional<Hotel>getHotelById(@PathVariable Long id){
 			return hotelRepo.findById(id);
 		
 	}
+		
+		@GetMapping("/getMyHotelById/{id}")
+		@PreAuthorize("hasRole('ROLE_HOTEL')")
+		public Optional<Hotel>getMyHotelById(@PathVariable Long id){
+			return hotelRepo.findByUserId(id);
+		
+	}
+		
+		   @GetMapping("/getRoomOfMyHotel/{id}")
+		   @PreAuthorize("hasRole('ROLE_HOTEL')")
+		   public List<Room>getRoomOfMyHotel(@PathVariable Long id){
+			   return roomRepo.findRoomOfMyHotel(id);
+		}	
+		
+		   @GetMapping("/getInactiveRoomOfMyHotel/{id}")
+		   @PreAuthorize("hasRole('ROLE_HOTEL')")
+		   public List<Room>getInactiveRoomOfMyHotel(@PathVariable Long id){
+			   return roomRepo.findInactiveRoomOfMyHotel(id);
+		}	
+		   
 		 @GetMapping("/getInactiveHotelById/{id}")
 		   @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_HOTEL')")
 		   public Optional<Hotel>getInactiveHotelById(@PathVariable Long id){
 			   return hotelRepo.findInactiveHotelById(id);
 		}
+		 
+			@GetMapping("getRoomDetailById/{id}")
+			@PreAuthorize("hasRole('ADMIN') or hasRole('HOTEL')")
+			public Optional<Room>getRoomById(@PathVariable Long id){
+
+				return 	roomRepo.findById(id);
+			}
 		
 		@GetMapping("/getHotelByHotelUsername/{hotelUsername}")
 		public Optional<Hotel>getHotelByUsername(@PathVariable String hotelUsername){
@@ -115,7 +163,21 @@ public class HotelController {
 			
 			return hotelRepo.findByHotelName(hotelName);
 		}
+		
+		@GetMapping("/getInactiveCustomerOfMyHotel/{id}")
+		public List<ReservationDetails>getInactiveCustomerOfMyHotel(@PathVariable Long id){
+			return reservationRepo.findByMyHotelId(id);
+		}
+		
+		@GetMapping("/getCustomerDetailById/{id}")
+		public Optional<Customer>getCustomerDetailById(@PathVariable Long id){
+			return customerRepo.findById(id);
+		}
 			
+		@GetMapping("/getDistinctCheckOutCustomerDetail/{id}")
+		public List<ReservationDetails>getDistinctCheckoutCustomer(@PathVariable Long id){
+			return reservationRepo.findDistinctCustomer(id);
+		}
 		
 	@PutMapping("/updateHotelDetail/{id}")
 	public ResponseEntity<?>updateHotelDetail(@PathVariable Long id,@RequestBody Hotel hotel){
@@ -143,11 +205,14 @@ public class HotelController {
 					 if(hotel.getPhone()!=null) {
 					updateHotel.setPhone(hotel.getPhone());
 					 }
+					 if(hotel.getLatitude()!=null) {
+						 updateHotel.setLatitude(hotel.getLatitude());
+					 }
+					 if(hotel.getLongitude()!=null) {
+						 updateHotel.setLongitude(hotel.getLongitude());
+					 }
 					 if(hotel.getPanNumber()!=null) {
 					updateHotel.setPanNumber(hotel.getPanNumber());
-					 }
-					 if(hotel.getDocument()!=null) {
-					updateHotel.setDocument(hotel.getDocument());
 					 }
 					 if(hotel.getDescription()!=null) {
 					updateHotel.setDescription(hotel.getDescription());

@@ -143,7 +143,9 @@ public class ProfilePictureService {
 
 
      public Resource loadFileAsResource(String fileName) {
+    
 	    	try {
+	    	
 				//Path filePath = this.fileStorageLocation.resolve(fileName).normalize();
 				Path filePath= this.fileStoragePath.resolve(fileName).normalize();
 

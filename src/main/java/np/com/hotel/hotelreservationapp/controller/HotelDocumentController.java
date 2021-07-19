@@ -87,7 +87,7 @@ public class HotelDocumentController {
 		if(hotelDocumentRepo.findByHotelId(id)!=null) {
 		return hotelDocumentRepo.findByHotelId(id);
 		}else {
-			 throw new ResourceNotFoundException("No  image present");
+			 throw new ResourceNotFoundException("No  document present");
 		}
 	}
 

@@ -5,6 +5,7 @@ import java.util.Optional;
 import javax.mail.MessagingException;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -15,6 +16,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import np.com.hotel.hotelreservationapp.exception.ResourceNotFoundException;
 import np.com.hotel.hotelreservationapp.model.UsersAuthentication;
+import np.com.hotel.hotelreservationapp.payload.response.MessageResponse;
 import np.com.hotel.hotelreservationapp.repository.UsersAuthenticationRepository;
 import np.com.hotel.hotelreservationapp.services.EmailService;
 import np.com.hotel.hotelreservationapp.services.OtpService;
@@ -35,7 +37,7 @@ public class EmailVerificationController {
 	
 	
 	@PostMapping("/generateOtp/{username}")
-	public String generateOTP(@PathVariable String username, @RequestBody UsersAuthentication user){
+	public ResponseEntity<?> generateOTP(@PathVariable String username, @RequestBody UsersAuthentication user){
 		
 		//getting username from user manually
 		//String username=user.getUsername();
@@ -67,18 +69,18 @@ public class EmailVerificationController {
 				String clickme = ServletUriComponentsBuilder.fromCurrentContextPath().path(AppConstants.PATH_FOR_EMAIL_VERIFICATION)
 						.path(username).toUriString();
 				
-				return clickme;
+				return ResponseEntity.ok(new MessageResponse(clickme));
 	
 			}else {
-				return "The email you provided for registration did not match this email.";
+				return ResponseEntity.ok(new MessageResponse("The email you provided for registration did not match this email."));
 			}
 		}else {
-			return "This username does not exist";
+			return ResponseEntity.ok(new MessageResponse("This username does not exist"));
 		}
 	}
 	
 	@PostMapping("/emailVerification/{username}")
-	public String emailVerification(@RequestParam("otpnum") int otpnum,@PathVariable String username){
+	public ResponseEntity<?> emailVerification(@RequestParam("otpnum") int otpnum,@PathVariable String username){
 		
 		//Validate the Otp 
 		if(otpnum >= 0){
@@ -93,16 +95,16 @@ public class EmailVerificationController {
 							return authRepo.save(enableUser);
 						}).orElseThrow(() -> new ResourceNotFoundException("Username " + username + " not found"));
 
-					return ("Email verified you can log into the system now.");
+					return ResponseEntity.ok(new MessageResponse("Email verified you can log into the system now."));
 				} 
 				else {
-					return "Otp did not match";
+					return ResponseEntity.ok(new MessageResponse("Otp did not match"));
 				}
 			}else {
-				return "No otp found in the server for "+username;
+				return ResponseEntity.ok(new MessageResponse("No otp found in the server for "+username));
 			}
 		}else {
-			return "No otp passed by user.";
+			return ResponseEntity.ok(new MessageResponse("No otp passed by user."));
 		}
 	}
 }

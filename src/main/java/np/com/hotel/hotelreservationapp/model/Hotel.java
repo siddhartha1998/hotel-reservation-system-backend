@@ -45,9 +45,6 @@ public class Hotel {
 	private Long panNumber;
 	
 	@NotBlank
-	private String document;
-	
-	@NotBlank
 	private String status;
 	
 	@NotBlank
@@ -84,7 +81,7 @@ public class Hotel {
 	@OneToMany(mappedBy = "hotel")
 	private List<HotelDocument>hotelDocument=new ArrayList<>();
 	
-	@JsonIgnore
+
 	@OneToOne
 	private UsersAuthentication user;
 
@@ -94,7 +91,7 @@ public class Hotel {
 
 	public Hotel(String hotelName,String hotelUsername, String hotelOwner,
 			String city, String hotelAddress,  Long phone,  Long panNumber,
-			 String document, String status,  String description, boolean active,
+			 String status,  String description, boolean active,
 			String latitude, String longitude, List<Room> room, List<ReservationDetails> reservation,
 			List<TemporaryReservation> temporaryReservation,  UsersAuthentication user) {
 		super();
@@ -105,7 +102,6 @@ public class Hotel {
 		this.hotelAddress = hotelAddress;
 		this.phone = phone;
 		this.panNumber = panNumber;
-		this.document = document;
 		this.status = status;
 		this.description = description;
 		this.active = active;
@@ -181,13 +177,6 @@ public class Hotel {
 		this.panNumber = panNumber;
 	}
 
-	public String getDocument() {
-		return document;
-	}
-
-	public void setDocument(String document) {
-		this.document = document;
-	}
 
 	public String getStatus() {
 		return status;

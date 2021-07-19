@@ -81,8 +81,7 @@ public class AdminController {
 
 		Optional<TemporaryReservation>temp=temporaryreservationRepo.findById(temporaryReservationId);
 		TemporaryReservation t=temp.get();
-		
-		
+				
 //		Object principal=SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 //		String hUsername=((UserDetailsImpl)principal).getUsername();
 //		
@@ -93,7 +92,7 @@ public class AdminController {
 //		Optional<Hotel>hotelDetail=hotelRepo.getHotelDetail(hId);
 //		Hotel h=hotelDetail.get();
 //		String hotelUsername=h.getHotelUsername();
-
+		
 
 		DateTimeFormatter dtf=DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
 		LocalDateTime now=LocalDateTime.now();
@@ -105,8 +104,9 @@ public class AdminController {
 				dtf.format(now),
 				t.getCheckOutDate(),
 				t.getNoOfGuest(),
+				t.getIdType(),
+				t.getIdNumber(),
 				t.getCustomer(),
-				t.getType(),
 				t.getReservationTime(),
 				t.getHotel()
 
@@ -114,9 +114,8 @@ public class AdminController {
 	
 //		transfer.setHotelReservation(h);
 		reservationRepo.save(transfer);
-		
 		temporaryreservationRepo.deleteById(temporaryReservationId);
-
+		
 		return ResponseEntity.ok(new MessageResponse("Customer has checked into the hotel."));
 
 	// }
@@ -130,15 +129,9 @@ public class AdminController {
 	@PreAuthorize("hasRole('ADMIN') or hasRole('HOTEL') or hasRole('CUSTOMER')")
 	public ResponseEntity<?>saveTemporaryReservationDetails(@RequestBody TemporaryReservation reservation,
 		@PathVariable Long hotelId,@PathVariable Long roomId, @PathVariable Long customerId ){
-//		
-//		Object principal=SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-//	    String username=((UserDetailsImpl)principal).getUsername();
-    
 
 	    try{
-	    	
-   
-		
+	    			
 		    Optional<Hotel> hotelDetail=hotelRepo.findById(hotelId);
 		    Hotel h=hotelDetail.get();
 		    Long hId=h.getId();
@@ -149,12 +142,9 @@ public class AdminController {
 	         Customer c=customerDetail.get();
   
 	
-	    
-	
 	    Optional<Room>roomDetail=roomRepo.findById(roomId);
    
 	    Room r=roomDetail.get();
-	    String roomType=r.getRoomType();
 	    Long roomNumber=r.getRoomNumber();
 			
 			if(roomDetail.isPresent()) {
@@ -170,9 +160,9 @@ public class AdminController {
 	    												reservation.getCheckInDate(),
 	    												reservation.getCheckOutDate(),
 	    												reservation.getNoOfGuest(),
-	    												
-	    												c,
-	    												roomType
+	    												reservation.getIdType(),
+	    												reservation.getIdNumber(),
+	    												c
 	    												);
 
 	    temporaryreservationRepo.save(newReservation);
@@ -182,11 +172,11 @@ public class AdminController {
 	   return roomRepo.save(updateActive);
    });
    
-	return ResponseEntity.ok("Room Reserved successfully!");
+	return ResponseEntity.ok(new MessageResponse("Room Reserved successfully!"));
 			
 			
 	    }else {
-		return ResponseEntity.ok("Room cannot Reserved.");
+		return ResponseEntity.ok(new MessageResponse("Room cannot Reserved."));
 	}
 
 	    }
@@ -223,8 +213,6 @@ public class AdminController {
 										username,
 										customer.getAddress(),
 										email,
-										customer.getIdType(),
-										customer.getIdNumber(),
 										customer.getAge(),
 										customer.getGender(),
 										customer.getPhone(),
@@ -255,13 +243,12 @@ public class AdminController {
 			return ResponseEntity.ok(new MessageResponse("this hotel already exist."));
 		}else {
 		Hotel add=new Hotel(hotel.getHotelName(),
-							hotel.getHotelUsername(),
+							hotelUsername,
 							hotel.getHotelOwner(),
 							hotel.getCity(),
 							hotel.getHotelAddress(),
 							hotel.getPhone(),
 							hotel.getPanNumber(),
-							hotel.getDocument(),
 							hotel.getStatus(),
 							hotel.getDescription(),
 							hotel.isActive(),
@@ -335,7 +322,7 @@ public class AdminController {
 	public ResponseEntity<?>getTemporaryReservation(){
 		return ResponseEntity.ok(temporaryreservationRepo.findAll());
 		
-}
+	}
 	
 	@GetMapping("/getRegisteredHotelDetail")
 	@PreAuthorize("hasRole('ADMIN')")
@@ -345,7 +332,7 @@ public class AdminController {
 	}
 	
 	@GetMapping("/getRegisteredHotelOnly")
-	@PreAuthorize("hasRole('ADMIN')")
+	@PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_HOTEL') ")
 	 public List<UsersAuthentication>getRegisteredHotelOnly(){
 		
 		   return userAuthRepo.findRegisterdHotelOnly();
@@ -363,7 +350,27 @@ public class AdminController {
 		return customerRepo.findById(id);
 	}
 	
+
+	@GetMapping("/getReservedRoom")
+ public List<ReservationDetails>getReservedRoom(){
+	 return reservationRepo.findReservedRoom();	
+	}
 	
+	@GetMapping("/getReservationDetailById/{id}")	
+	public Optional<ReservationDetails>getReservationDetailById(@PathVariable Long id){
+			return reservationRepo.findById(id);
+		}
+	
+	@GetMapping("/getTemporaryReservationDetailById/{id}")	
+	public Optional<TemporaryReservation>getTemporaryReservationDetailById(@PathVariable Long id){
+			return temporaryreservationRepo.findById(id);
+		}
+
+	
+	@GetMapping("/getNonReservedRoom")
+ public List<Room>getNonReservedRoom(){
+	 return roomRepo.findNonReservedRoom();	
+	}
 	
 	
  @PutMapping("/updateHotelDetail/{id}")
@@ -396,8 +403,11 @@ public class AdminController {
 				 if(hotel.getPanNumber()!=null) {
 				updateHotel.setPanNumber(hotel.getPanNumber());
 				 }
-				 if(hotel.getDocument()!=null) {
-				updateHotel.setDocument(hotel.getDocument());
+				 if(hotel.getLatitude()!=null) {
+					 updateHotel.setLatitude(hotel.getLatitude());
+				 }
+				 if(hotel.getLongitude()!=null) {
+					 updateHotel.setLongitude(hotel.getLongitude());
 				 }
 				 if(hotel.getDescription()!=null) {
 				updateHotel.setDescription(hotel.getDescription());
@@ -429,7 +439,7 @@ public class AdminController {
 			
 			 return hotelRepo.save(updateActiveStatus);
 		 }).orElseThrow(() -> new ResourceNotFoundException("Id "+hotelId+ " not found"));
-		 return ResponseEntity.ok(new MessageResponse("Updated Successfully from if"));
+		 return ResponseEntity.ok(new MessageResponse("Active Status Updated Successfully!"));
 		
 	 }else{
 		 
@@ -439,7 +449,7 @@ public class AdminController {
 			
 			 return hotelRepo.save(updateActiveStatus);
 		 }).orElseThrow(() -> new ResourceNotFoundException("Id "+hotelId+ " not found"));
-		 return ResponseEntity.ok(new MessageResponse("Updated Successfully from else"));
+		 return ResponseEntity.ok(new MessageResponse("Active Status Updated Successfully!"));
 	 }
  }
  
@@ -455,13 +465,13 @@ public class AdminController {
 			   updateActiveStatus.setActive(false);
 			 return customerRepo.save(updateActiveStatus);  
 		   }).orElseThrow(() -> new ResourceNotFoundException("Id "+id+ "not Found"));
-		   return ResponseEntity.ok(new MessageResponse("Updated Successfully from if"));
+		   return ResponseEntity.ok(new MessageResponse("Active Status Updated Successfully!"));
 		   }else {
 			   customerRepo.findById(id).map(updateActiveStatus ->{
 			  updateActiveStatus.setActive(true);
 			  return customerRepo.save(updateActiveStatus);
 			    }).orElseThrow(() -> new ResourceNotFoundException("Id "+id+ " not found"));
-			   return ResponseEntity.ok(new MessageResponse("Updated Successfully from else"));
+			   return ResponseEntity.ok(new MessageResponse("Active Status Updated Successfully!"));
 	   }
    }
 
@@ -474,9 +484,8 @@ public class AdminController {
 		
 		Optional<Customer>cus=customerRepo.findById(id);
 		if(cus.isPresent()) {
-			Customer update=cus.get();
-			String cUsername=update.getUsername();
-//			if(username.equals(cUsername)) {
+//			Customer update=cus.get();
+//			String cUsername=update.getUsername();
 				
 				 customerRepo.findById(id).map(updateCustomerDetail->{
 					 
@@ -485,14 +494,6 @@ public class AdminController {
 					 }
 					 if(customer.getAddress()!=null) {
 					updateCustomerDetail.setAddress(customer.getAddress());
-					 }
-					 if(customer.getIdType()!=null) {
-				
-					
-					updateCustomerDetail.setIdType(customer.getIdType());
-					 }
-					 if(customer.getIdNumber()!=null) {
-					updateCustomerDetail.setIdNumber(customer.getIdNumber());
 					 }
 					 if(customer.getAge()!=null) {
 					updateCustomerDetail.setAge(customer.getAge());
@@ -506,18 +507,13 @@ public class AdminController {
 					return customerRepo.save(updateCustomerDetail);
 				}).orElseThrow(() -> new ResourceNotFoundException("Id "+id+ " not found"));
 			return ResponseEntity.ok(new MessageResponse("Customer Detail Update Successfully!"));	
-//			}else {
-//					return ResponseEntity.ok(new MessageResponse("Customer cannot updated. "));
-//				}
-
 	
 			
 		}else {
 		
 	      return ResponseEntity.ok(new MessageResponse("Customer with id "+id+" is not found"));	
 		}
-						
-				
+								
 	}
 	
 	
@@ -529,7 +525,6 @@ public class AdminController {
 		Optional<Room>a=roomRepo.findById(id);
 		if(a.isPresent()) {
 
-				
 					roomRepo.findById(id).map(updateDetail->{
 						
 					if(room.getRoomNumber()!=null) {
@@ -557,27 +552,29 @@ public class AdminController {
 	@PutMapping("/updateReservationDetail/{id}")
 	public ReservationDetails updateReservationDetail(@PathVariable Long id,@RequestBody ReservationDetails reservation){
 		
-
-		Optional<ReservationDetails>reservationDetail=reservationRepo.findById(id);
-
+	Optional<ReservationDetails>reservationDetail=reservationRepo.findById(id);
 		if(reservationDetail.isPresent()){
-			
-			
+				
 			return reservationRepo.findById(id).map(updateReservation->{
 				updateReservation.setNoOfGuest(reservation.getNoOfGuest());
 				updateReservation.setCheckInDate(reservation.getCheckInDate());
 				updateReservation.setCheckOutDate(reservation.getCheckOutDate());
-			return reservationRepo.save(updateReservation);
+				updateReservation.setIdType(reservation.getIdType());
+				updateReservation.setIdNumber(reservation.getIdNumber());
+				
+			   return reservationRepo.save(updateReservation);
+	
 			}).orElseThrow(() -> new ResourceNotFoundException("Id "+id+ " not found"));
 
 		}else{
-		return null;
+			return null;
 		}	
 	}	
 	
 	
 	@PutMapping("/updateTemporaryReservation/{id}")
-	public TemporaryReservation updateTemporaryReservation(@PathVariable Long id,@RequestBody TemporaryReservation reservation){
+	public TemporaryReservation updateTemporaryReservation(@PathVariable Long id,
+			@RequestBody TemporaryReservation reservation){
 	
 		Optional<TemporaryReservation>reservationDetail=temporaryreservationRepo.findById(id);
 //		TemporaryReservation r=reservationDetail.get();
@@ -591,6 +588,8 @@ public class AdminController {
 				updateReservation.setNoOfGuest(reservation.getNoOfGuest());
 				updateReservation.setCheckInDate(reservation.getCheckInDate());
 				updateReservation.setCheckOutDate(reservation.getCheckOutDate());
+				updateReservation.setIdType(reservation.getIdType());
+				updateReservation.setIdNumber(reservation.getIdNumber());
 			return temporaryreservationRepo.save(updateReservation);
 			}).orElseThrow(() -> new ResourceNotFoundException("Id "+id+ " not found"));
 
@@ -662,34 +661,22 @@ public class AdminController {
 		}
 	}
 	
-	@GetMapping("/getReservedRoom")
- public List<ReservationDetails>getReservedRoom(){
-	 return reservationRepo.findReservedRoom();	
-	}
-	
-	@GetMapping("/getReservationDetailById/{id}")	
-	public Optional<ReservationDetails>getReservationDetailById(@PathVariable Long id){
-			return reservationRepo.findById(id);
-		}
-	
-	@GetMapping("/getTemporaryReservationDetailById/{id}")	
-	public Optional<TemporaryReservation>getTemporaryReservationDetailById(@PathVariable Long id){
-			return temporaryreservationRepo.findById(id);
-		}
-
-	
-	@GetMapping("/getNonReservedRoom")
- public List<Room>getNonReservedRoom(){
-	 return roomRepo.findNonReservedRoom();	
-	}
 	
 	@PutMapping("/deleteReservationDetail/{id}")
 	public ResponseEntity<?>deleteReservationDetails(@PathVariable Long id){
 
 		Optional<ReservationDetails>reservationDetail=reservationRepo.findById(id);
+		ReservationDetails r=reservationDetail.get();
+		Room roomDetail=r.getRoom();
+		Long roomId=roomDetail.getId();
 
 		if(reservationDetail.isPresent()){
 			reservationRepo.deleteById(id);
+			 roomRepo.findById(roomId).map(updateActive->{
+				    updateActive.setAvailability(true);
+				    
+				   return roomRepo.save(updateActive);
+			   });
 
 			return ResponseEntity.ok(new MessageResponse("Reservation Canceled"));
 		}else{
@@ -702,9 +689,17 @@ public class AdminController {
 		
 		
 		Optional<TemporaryReservation>reservationDetail=temporaryreservationRepo.findById(id);
+		TemporaryReservation temp=reservationDetail.get();
+		Room roomDetail=temp.getRoom();
+		Long roomId=roomDetail.getId();
 	
 		if(reservationDetail.isPresent()){
 			temporaryreservationRepo.deleteById(id);
+			 roomRepo.findById(roomId).map(updateActive->{
+				    updateActive.setAvailability(true);
+				    
+				   return roomRepo.save(updateActive);
+			   });
 
 			return ResponseEntity.ok(new MessageResponse("Reservation Canceled"));
 		}else{
@@ -734,6 +729,8 @@ public class AdminController {
 	 			   return ResponseEntity.ok(new MessageResponse("Updated Successfully from else"));
 	 	   }
 	    }
+	   
+	   
 	   @PutMapping("/checkOut/{reservationId}")
 	   public ResponseEntity<?>checkOutReservation(@RequestBody Hotel hotelDetail,
 			   @PathVariable Long reservationId){
@@ -761,9 +758,8 @@ public class AdminController {
 		  	   }).orElseThrow(() -> new ResourceNotFoundException("Id "+id+ " not found"));;
 		  	   
 	  		 
-	  		 return ResponseEntity.ok(new MessageResponse("Updated Successfully from if"));
+	  		 return ResponseEntity.ok(new MessageResponse("Check out from the hotel"));
 	  		 
-	  	   
 	  		
 	  	 }else{
 

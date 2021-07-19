@@ -50,6 +50,18 @@ public interface RoomRepository extends JpaRepository<Room, Long> {
 	@Query(value="select * from tbl_room where active = '1' and hotel_id=?1 and room_number=?2", nativeQuery = true)
 	public boolean findByHotelIdAndRoomNumber(Long id, boolean b);
 
+	@Query(value="select * from tbl_room where active='1' and hotel_id=?1",nativeQuery=true)
+	public List<Room> findRoomOfMyHotel(Long id);
+
+	@Query(value="select * from tbl_room where active='0' and hotel_id=?1", nativeQuery=true)
+	public List<Room> findInactiveRoomOfMyHotel(Long id);
+
+	@Query(value="select * from tbl_room where active='1' and availability='1' and hotel_id=?1", nativeQuery = true)
+	public List<Room> getAvailableRoomOfMyHotel(Long id);
+
+	@Query(value="select * from tbl_room where active ='1' and availability='1'", nativeQuery=true)
+	public Optional<Room> findByRoomNumber(Long roomNumber);
+
 
 }
 

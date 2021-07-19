@@ -22,6 +22,7 @@ import np.com.hotel.hotelreservationapp.model.Customer;
 import np.com.hotel.hotelreservationapp.model.Hotel;
 import np.com.hotel.hotelreservationapp.model.Room;
 import np.com.hotel.hotelreservationapp.model.TemporaryReservation;
+import np.com.hotel.hotelreservationapp.payload.response.MessageResponse;
 import np.com.hotel.hotelreservationapp.repository.CustomerRepository;
 import np.com.hotel.hotelreservationapp.repository.HotelRepository;
 import np.com.hotel.hotelreservationapp.repository.RoomRepository;
@@ -84,10 +85,9 @@ public class TemporaryReservationController {
 	    												reservation.getCheckInDate(),
 	    												reservation.getCheckOutDate(),
 	    												reservation.getNoOfGuest(),
-	    												c,
-	    		
-	    												roomType
-														
+	    												reservation.getIdType(),
+	    												reservation.getIdNumber(),
+	    												c
 	    												);
 //	    newReservation.setTemporaryReservation(h);
 	    temporaryreservationRepo.save(newReservation);
@@ -97,16 +97,16 @@ public class TemporaryReservationController {
 	   return roomRepo.save(updateActive);
    });
    
-	return ResponseEntity.ok("Room Reserved successfully!");
+	return ResponseEntity.ok(new MessageResponse("Room Reserved successfully!"));
 
 		}
 		
 		else{
 			
-			return ResponseEntity.ok("This room is already reserved.");
+			return ResponseEntity.ok(new MessageResponse("This room is already reserved."));
 		}
 		    }else {
-		    	return ResponseEntity.ok("This hotel does not exist");
+		    	return ResponseEntity.ok(new MessageResponse("This hotel does not exist"));
 		    }
 		
 			
@@ -130,6 +130,11 @@ public class TemporaryReservationController {
 		
 }
 
+	@GetMapping("/getTemporaryReservationById/{id}")
+	public List<TemporaryReservation>getTemporaryReservationById(@PathVariable Long id){
+		return temporaryreservationRepo.findByHotelId(id);
+	}
+	
 	@PutMapping("/updateTemporaryReservation/{id}")
 	public TemporaryReservation updateTemporaryReservation(@PathVariable Long id,@RequestBody TemporaryReservation reservation){
 		Object principal=SecurityContextHolder.getContext().getAuthentication().getPrincipal();

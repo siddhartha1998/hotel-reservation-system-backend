@@ -78,8 +78,9 @@ public class ReservationController {
 	    												reservation.getCheckInDate(),
 	    												reservation.getCheckOutDate(),
 	    												reservation.getNoOfGuest(),
+	    												reservation.getIdType(),
+	    												reservation.getIdNumber(),
 	    												c,
-	    												roomType,
 	    												dtf.format(now),
 	    												h);
 //	    newReservation.setHotelReservation(h);
@@ -95,10 +96,20 @@ public class ReservationController {
 		return reservationRepo.findAll();
 		
 	}
-	@GetMapping("/getReservationDetailById/{id}")	
-	public Optional<ReservationDetails>getReservationDetailById(@PathVariable Long roomId){
+	@GetMapping("/getReservationDetailByRoomId/{id}")	
+	public Optional<ReservationDetails>getReservationDetailByRoomId(@PathVariable Long roomId){
 			return reservationRepo.findById(roomId);
 		}
+	
+	@GetMapping("reservationDetailById/{id}")
+	public List<ReservationDetails>reservationDetailById(@PathVariable Long id){
+		return reservationRepo.findByHotelId(id);
+	}
+	
+	@GetMapping("getCheckOutCustomerDetailByHotelId/{id}")
+	public List<ReservationDetails>getCheckOutCustomerDetailByHotelId(@PathVariable Long id){
+		return reservationRepo.findByMyHotelId(id);
+	}
 
 	@PutMapping("/updateReservationDetail/{id}")
 	public ReservationDetails updateReservationDetail(@PathVariable Long id,@RequestBody ReservationDetails reservation){

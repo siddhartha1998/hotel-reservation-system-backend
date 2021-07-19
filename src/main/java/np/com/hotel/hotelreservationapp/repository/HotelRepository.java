@@ -35,6 +35,9 @@ public interface HotelRepository extends JpaRepository<Hotel, Long> {
 	
 	@Query(value="select * from tbl_hotel where active='1'",nativeQuery = true)
 	public List<Hotel>findAll();
+	
+	@Query(value="select * from tbl_hotel",nativeQuery = true)
+	public List<Hotel>findAllHotel();
 
 	//@Query(value="select * from tbl_hotel where active='1' and user_user_id=?1",nativeQuery = true)
 	@Query(value="SELECT * FROM tbl_hotel WHERE active='1' AND user_user_id = ?1 ",nativeQuery = true)
@@ -45,4 +48,7 @@ public interface HotelRepository extends JpaRepository<Hotel, Long> {
 
 	@Query(value="select * from tbl_hotel where active='0' and id=?1", nativeQuery=true)
 	public Optional<Hotel> findInactiveHotelById(Long id);
+
+	@Query(value="select * from tbl_hotel where user_user_id=?1", nativeQuery=true)
+	Optional<Hotel> findByUserId(Long id);
 }

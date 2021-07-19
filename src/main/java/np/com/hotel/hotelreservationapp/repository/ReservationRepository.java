@@ -27,4 +27,14 @@ public interface ReservationRepository extends JpaRepository<ReservationDetails,
 
 	@Query(value="select * from tbl_reservation_details where active = 1 ", nativeQuery = true)
 	public List<ReservationDetails> findReservedRoom();
+
+	@Query(value="select * from tbl_reservation_details where active = '1' and hotel_id=?1", nativeQuery=true)
+	public List<ReservationDetails> findByHotelId(Long id);
+
+	@Query(value="select * from tbl_reservation_details where active = '0' and hotel_id=?1", nativeQuery=true)
+	public List<ReservationDetails> findByMyHotelId(Long id);
+
+	@Query(value="select * from tbl_reservation_details where customer_id IN(select distinct(customer_id) from tbl_reservation_details) "
+			+ "and hotel_id=?1 and active='0'", nativeQuery=true)
+	public List<ReservationDetails> findDistinctCustomer(Long id);
 }

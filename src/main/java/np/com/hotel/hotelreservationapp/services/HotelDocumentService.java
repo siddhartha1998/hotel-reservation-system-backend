@@ -50,13 +50,7 @@ public class HotelDocumentService {
 	
 	
 	public ResponseEntity<?> storeHotelDocument(MultipartFile hotelDocument,Hotel hotel, String newFileName, String username, String fileDownloadUri){
-		if(!(hotelDocument.getOriginalFilename().endsWith(AppConstants.PNG_FILE_FORMAT) ||
-				hotelDocument.getOriginalFilename().endsWith(AppConstants.JPEG_FILE_FORMAT)||
-				hotelDocument.getOriginalFilename().endsWith(AppConstants.JPG_FILE_FORMAT)||
-				hotelDocument.getOriginalFilename().endsWith(AppConstants.CAPITAL_PNG_FILE_FORMAT)||
-				hotelDocument.getOriginalFilename().endsWith(AppConstants.CAPITAL_JPEG_FILE_FORMAT)||
-				hotelDocument.getOriginalFilename().endsWith(AppConstants.CAPITAL_JPG_FILE_FORMAT)||
-				hotelDocument.getOriginalFilename().endsWith(AppConstants.PDF_FILE_FORMAT)||
+		if(!(hotelDocument.getOriginalFilename().endsWith(AppConstants.PDF_FILE_FORMAT)||
 				hotelDocument.getOriginalFilename().endsWith(AppConstants.CAPITAL_PDF_FILE_FORMAT)
 				))
 		throw new FileStorageException(AppConstants.INVALID_FILE_FORMAT);

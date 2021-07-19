@@ -83,10 +83,10 @@ public class ProfilePictureController {
 			// make a call to the service,
 			profilePictureService.storeProfilePicture(profile, username, fileDownloadUri, randomChars);
 
-			return ResponseEntity.ok("Profile Picture uploaded");
+			return ResponseEntity.ok(new MessageResponse("Profile Picture uploaded successfully!"));
 
 		} else {
-			return ResponseEntity.ok("You are not eligible for this operation");
+			return ResponseEntity.ok(new MessageResponse("You are not eligible for this operation"));
 		}
 
 		// return ResponseEntity.ok("hello");
@@ -117,7 +117,7 @@ public class ProfilePictureController {
 		// make a call to the service,
 		profilePictureService.storeAdminProfilePicture(profile, u, newFileName, username, fileDownloadUri);
 
-		return ResponseEntity.ok("Profile Picture uploaded");
+		return ResponseEntity.ok(new MessageResponse("Profile Picture uploaded successfully"));
 
 		// return ResponseEntity.ok("hello");
 	}

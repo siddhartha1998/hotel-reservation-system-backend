@@ -36,13 +36,7 @@ public class Customer {
 	@Email
 	@NotBlank
 	private String email;
-	
-	@NotBlank
-	private String idType;
-	
-	@NotBlank
-	private String idNumber;
-	
+		
 	@NotBlank
 	private Integer age;
 	
@@ -51,8 +45,6 @@ public class Customer {
 	
 	private Long phone;
 	
-	
-
 	private boolean active=true;
 	
 	@OneToOne
@@ -65,17 +57,15 @@ public class Customer {
 		
 		
 	}
-	public Customer(@NotBlank String fullname, @NotBlank String username, @NotBlank String address,
-			@Email @NotBlank String email, @NotBlank String idType, @NotBlank String idNumber, @NotBlank Integer age,
-			@NotBlank String gender, Long phone, UsersAuthentication user,
+	public Customer( String fullname,String username, String address,
+			 String email, Integer age,
+			 String gender, Long phone, UsersAuthentication user,
 			List<ReservationDetails> reservation) {
 		super();
 		this.fullname = fullname;
 		this.username = username;
 		this.address = address;
 		this.email = email;
-		this.idType = idType;
-		this.idNumber = idNumber;
 		this.age = age;
 		this.gender = gender;
 		this.phone = phone;
@@ -131,25 +121,6 @@ public class Customer {
 		this.email = email;
 	}
 	
-	
-	public String getIdType() {
-		return idType;
-	}
-	
-	
-	public void setIdType(String idType) {
-		this.idType = idType;
-	}
-	
-	
-	public String getIdNumber() {
-		return idNumber;
-	}
-	
-	
-	public void setIdNumber(String idNumber) {
-		this.idNumber = idNumber;
-	}
 	
 	
 	public Integer getAge() {

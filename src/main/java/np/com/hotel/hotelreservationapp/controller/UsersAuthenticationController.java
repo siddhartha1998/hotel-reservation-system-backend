@@ -94,6 +94,7 @@ public class UsersAuthenticationController {
 				Role customerRole = roleRepository.findByName(ERole.ROLE_CUSTOMER)
 						.orElseThrow(() -> new RuntimeException("Error: Role is not found."));
 				roles.add(customerRole);
+				
 			} else {
 				strRoles.forEach(roless -> {
 					switch (roless) {
@@ -101,16 +102,14 @@ public class UsersAuthenticationController {
 						Role adminRole = roleRepository.findByName(ERole.ROLE_ADMIN)
 								.orElseThrow(() -> new RuntimeException("Error: Role is not found."));
 						roles.add(adminRole);
-						
-					
-
 						break;
+						
 					case "hotel":
 						Role hotelRole = roleRepository.findByName(ERole.ROLE_HOTEL)
 								.orElseThrow(() -> new RuntimeException("Error: Role is not found."));
 						roles.add(hotelRole);
-
 						break;
+						
 					default:
 						Role customerRole = roleRepository.findByName(ERole.ROLE_CUSTOMER)
 								.orElseThrow(() -> new RuntimeException("Error: Role is not found."));
@@ -136,6 +135,7 @@ public class UsersAuthenticationController {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
+					authRepo.save(u1);
 					
 					return ResponseEntity.ok(new MessageResponse("New User Registered Successfully"));
 	
@@ -164,7 +164,8 @@ public class UsersAuthenticationController {
 		String email=u.getEmail();
 		
 		boolean isEnabled=u.isEnabled();
-		if(isEnabled==true) {
+		boolean isActive=u.isActive();
+		if(isEnabled==true && isActive==true) {
 			//return ResponseEntity.ok(new MessageResponse("Login successful.............."));
 			
 			return ResponseEntity.ok(new JwtResponse(jwt,

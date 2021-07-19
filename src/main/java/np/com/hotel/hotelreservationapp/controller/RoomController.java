@@ -138,26 +138,19 @@ public class RoomController {
 		return 	roomRepo.findById(id);
 	}
 
-	@GetMapping("getAvailableRoom")
-	public List<Room>getAvailableRoom(){
-
-		return roomRepo.getAvailableRoom();}
-
-	@GetMapping("getRoomByPriceInAscOrder")
-	public List<Room>getRoomByPriceInAscOrder(){
-
-		return roomRepo.getRoomByPriceInAscOrder();
-	}
-
-	@GetMapping("getRoomByPriceInDesc")
-	public List<Room>getRoomByPriceInDesc(){
-
-		return roomRepo.getRoomByPriceInDescOrder();
-	}
+	@GetMapping("getActiveRoom")
+	public List<Room>getActiveRoom(){
+	return roomRepo.getAvailableRoom();}
+	
 	
 	@GetMapping("getInactiveRoom")
 	public List<Room>getReservationRoom(){
 		return roomRepo.getUnavailableRoom();
+	}
+	
+	@GetMapping("/getNonReservedRoomOfMyHotel/{id}")
+	public List<Room>getNonReservedRoomOfMyHotel(@PathVariable Long id){
+		return roomRepo.getAvailableRoomOfMyHotel(id);
 	}
 	
 	@PutMapping("/updateRoomDetail/{id}")

@@ -28,6 +28,7 @@ public interface CustomerRepository extends JpaRepository<Customer, Long> {
 
 	@Query(value="SELECT * FROM tbl_customer_details WHERE active='0'", nativeQuery=true)
 	List<Customer>findInactiveCustomer();
+
 	
 	
 }
